@@ -4,13 +4,14 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Net;
 using System.Net.Http;
+using System.Web.Configuration;
 using System.Web.Http;
 using WebApplication1.Models;
 namespace WebApplication1.Controllers
 {
     public class WebHookController : ApiController
     {
-        const string _serverUrl = "https://localhost:57402/";
+        string _serverUrl = WebConfigurationManager.AppSettings["serviceUrl"];
 
         // POST: api/WebHook
         public void Post([FromBody]WebHookRequestBody value)
