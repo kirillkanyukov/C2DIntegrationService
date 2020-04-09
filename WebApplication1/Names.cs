@@ -40,6 +40,8 @@ namespace WebApplication1
         public const string Direction = "new_direction";
 
         public const string Text = "new_text";
+
+        public const string EventTime = "new_eventtime";
     }
 
     public static class SystemUserAttributes

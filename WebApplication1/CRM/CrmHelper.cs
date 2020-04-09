@@ -128,6 +128,7 @@ namespace WebApplication1.CRM
             newMessage[MessageAttributes.ChatId] = chat;
             newMessage[MessageAttributes.Direction] = new OptionSetValue(type);
             newMessage[MessageAttributes.Transport] = new OptionSetValue(transport);
+            newMessage[MessageAttributes.EventTime] = requestBody.EventTime;
 
             _service.Create(newMessage);
         }

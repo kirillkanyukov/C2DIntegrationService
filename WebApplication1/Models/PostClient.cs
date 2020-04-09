@@ -17,6 +17,6 @@ namespace WebApplication1.Models
 
     public partial class PostClient
     {
-        public static PostClient FromJson(string json) => JsonConvert.DeserializeObject<PostClient>(json, QuickType.Converter.Settings);
+        public static PostClient FromJson(string json) => JsonConvert.DeserializeObject<PostClient>(json, Converter.Settings);
     }
 }
