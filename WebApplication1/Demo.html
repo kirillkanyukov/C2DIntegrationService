@@ -1,0 +1,148 @@
+﻿<html>
+<head>
+    <meta charset="utf-8">
+    <script type="text/javascript" src="ClientGlobalContext.js.aspx"></script>
+    <script type="text/javascript" src="new_jquery"></script>
+    <script type="text/javascript" src="new_signalr"></script>
+    <script type="text/javascript" src="https://kanyukovbotlottery.azurewebsites.net/signalr/hubs"></script>
+
+    <script>
+		$(document).ready(function () {
+
+            /*LoadMessages(Xrm.Page.data.entity.getId(), function(result) {
+				result.entities.forEach(function(item) {
+
+					$('#logtable').append('<tr><td>' + item.new_text
+						+ '</td><td>' + item.createdon + '</td></tr>');
+
+				});
+				
+				var messagePanel = $.connection.chat2DeskHub;
+				
+				messagePanel.client.addLog = function (name, date) {
+					$('#logtable').append('<tr><td>' + name
+						+ '</td><td>' + date + '</td></tr>');
+				};
+
+				
+                $.connection.hub.url = 'https://kanyukovbotlottery.azurewebsites.net/signalr/hubs';
+				$.connection.hub.start({
+                    jsonp: true
+                }).done(function () {
+					console.log("SIGNALR HUB IS CONNECTED");
+				});
+			});*/
+            var messagePanel = $.connection.chat2DeskHub;
+
+            messagePanel.client.addLog = function (name, date) {
+                $('#logtable').append('<tr><td>' + name
+                    + '</td><td>' + date + '</td></tr>');
+            };
+
+
+            $.connection.hub.url = 'https://localhost:57402/signalr/hubs';
+            $.connection.hub.start({
+                jsonp: true
+            }).done(function () {
+                console.log("SIGNALR HUB IS CONNECTED");
+            });
+        });
+
+        function LoadMessages(regardingObjectId, callback) {
+
+            Xrm.WebApi.retrieveMultipleRecords("new_chat2deskmessage", "?$select=new_text,createdon").then(
+                function success(result) {
+callback(result);
+                },
+                function (error) {
+                    console.log(error.message);
+                    // handle error conditions
+                }
+            );
+
+        }
+
+        function sendButtonOnClick() {
+
+            var demoClientId = "116774278";
+
+            var demoTransport = "telegram";                        
+
+            var postRequest = {
+                "type": "to_client",
+                "text": $('#newMessageInput').val(),
+                "transport": demoTransport,
+                "client_id": demoClientId,
+                "operator_id": null
+            }
+
+            $.ajax({
+                type: "POST",
+                contentType: "application/json; charset=utf-8",
+                datatype: "json",
+                url: "http://localhost:57402/api/outgoingmessage",
+                beforeSend: function (XMLHttpRequest) {
+                    XMLHttpRequest.setRequestHeader("OData-MaxVersion", "4.0");
+                    XMLHttpRequest.setRequestHeader("OData-Version", "4.0");
+                    XMLHttpRequest.setRequestHeader("Accept", "application/json");
+                },
+                async: false,
+                success: function (data, textStatus, xhr) {
+                    var result = data;
+                    var c4crm_exact_address = result["c4crm_exact_address"];
+                    if (c4crm_exact_address)
+                        Xrm.Page.getAttribute(fieldNames.ADDRESS).setValue(c4crm_exact_address);
+                    else
+                        Xrm.Page.getAttribute(fieldNames.ADDRESS).setValue(null);
+                },
+                error: function (xhr, textStatus, errorThrown) {
+                    Xrm.Utility.alertDialog(textStatus + " " + errorThrown);
+                }
+            });
+
+        }
+
+    </script>
+    <style>
+        table, th, td {
+            border: 1px solid black;
+            border-collapse: collapse;
+        }
+
+        th, td {
+            padding: 10px;
+        }
+
+        td {
+            text-align: center;
+        }
+    </style>
+    <meta>
+    <meta>
+    <meta>
+    <meta>
+    <meta>
+    <meta>
+    <meta>
+    <meta>
+</head>
+<body style="overflow-wrap: break-word;" onfocusout="parent.setEmailRange();">
+    <div>
+        <h2>Chat2Desk Integration Demo</h2>
+        <table border="1" id="logtable">
+            <tbody>
+                <tr>
+                    <th>Message</th>
+                    <th>Date/Time</th>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+    <div>
+        <input type="text" id="newMessageInput"/>
+        <button onclick="sendButtonOnClick">Send</button>
+    </div>
+
+
+</body>
+</html>
