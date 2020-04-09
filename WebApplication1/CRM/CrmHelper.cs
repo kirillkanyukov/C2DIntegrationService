@@ -6,6 +6,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.ServiceModel.Description;
+using System.Web.Configuration;
 using WebApplication1.Models;
 namespace WebApplication1.CRM
 {
@@ -107,17 +108,17 @@ namespace WebApplication1.CRM
                     break;
             }
 
-            int direction;
+            int type;
             switch (requestBody.Type)
             {
                 case "from_client":
-                    direction = Directions.Incoming;
+                    type = Types.Incoming;
                     break;
                 case "to_client":
-                    direction = Directions.Outgoing;
+                    type = Types.Outgoing;
                     break;
                 default:
-                    direction = Directions.Incoming;
+                    type = Types.System;
                     break;
             }
 
@@ -125,10 +126,18 @@ namespace WebApplication1.CRM
 
             newMessage[MessageAttributes.Text] = requestBody.Text;
             newMessage[MessageAttributes.ChatId] = chat;
-            newMessage[MessageAttributes.Direction] = new OptionSetValue(direction);
+            newMessage[MessageAttributes.Direction] = new OptionSetValue(type);
             newMessage[MessageAttributes.Transport] = new OptionSetValue(transport);
 
             _service.Create(newMessage);
+        }
+
+        public void UpdateContactWithClientId(string contactId, string clientId)
+        {
+            var updContact = new Entity(EntityNames.Contact) { Id = new Guid(contactId) };
+            updContact[ContactAttributes.Chat2DeskClientId] = clientId;
+
+            _service.Update(updContact);
         }
 
         private static void GetOrganizationServiceProxy()
@@ -136,10 +145,10 @@ namespace WebApplication1.CRM
             try
             {
                 
-                var userName = "ivan666@testdevs5.onmicrosoft.com";   // User Name
-                var password = "Appal00sa";                          // Password
+                var userName = WebConfigurationManager.AppSettings["crmUsername"];   // User Name
+                var password = WebConfigurationManager.AppSettings["crmPassword"];                          // Password
 
-                CRMConnect(userName, password, "https://testdevs5.api.crm.dynamics.com/XRMServices/2011/Organization.svc");
+                CRMConnect(userName, password, WebConfigurationManager.AppSettings["crmUrl"]);
                 
             }
             catch (Exception ex)
@@ -162,7 +171,7 @@ namespace WebApplication1.CRM
             }
             catch (Exception ex)
             {
-                
+                throw ex;
             }
         }
 

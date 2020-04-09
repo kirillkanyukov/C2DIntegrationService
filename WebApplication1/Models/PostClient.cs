@@ -6,7 +6,7 @@ using System.Web;
 
 namespace WebApplication1.Models
 {
-    public partial class PostClient
+    public partial class PostClient : WebRequest
     {
         [JsonProperty("phone")]
         public string Phone { get; set; }

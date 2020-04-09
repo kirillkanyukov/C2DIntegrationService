@@ -6,16 +6,16 @@ using System.Web;
 
 namespace WebApplication1.Models
 {
-    public partial class PostClientResponse
+    public partial class PostClientResponse : WebRequest
     {
         [JsonProperty("data")]
-        public Data Data { get; set; }
+        public NewClientData Data { get; set; }
 
         [JsonProperty("status")]
         public string Status { get; set; }
     }
 
-    public partial class Data
+    public partial class NewClientData
     {
         [JsonProperty("id")]
         public long Id { get; set; }

@@ -66,9 +66,10 @@ namespace WebApplication1
         public const int SMS = 237530001;
         public const int Other = 237530001;
     }
-    public static class Directions
+    public static class Types
     {
         public const int Incoming = 0;
         public const int Outgoing = 1;
+        public const int System = 2;
     }
 }

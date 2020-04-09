@@ -24,25 +24,9 @@ namespace WebApplication1.Controllers
 
             var chat2deskToken = WebConfigurationManager.AppSettings["chat2deskToken"];
 
-            if (request.ClientId != null)
+            if (request.ClientId == null)
             {
 
-                using (WebClient client = new WebClient())
-                {
-
-                    client.Encoding = Encoding.UTF8;
-                    client.Headers["Content-type"] = "application/json";
-                    client.Headers["Authorization"] = chat2deskToken;
-                    var urlString = "https://api.chat2desk.com/v1/messages";
-
-                    var responseJson = client.UploadString(urlString, "POST", request.ToJson());
-
-                    var response = PostMessageChat2DeskResponse.FromJson(responseJson);
-
-                }
-
-            } else
-            {
                 //post client with phone
                 if (request.Phone != null && request.ContactId != null)
                 {
@@ -62,11 +46,47 @@ namespace WebApplication1.Controllers
 
                         var responseJson = client.UploadString(urlString, "POST", postClient.ToJson());
 
-                        var response = PostMessageChat2DeskResponse.FromJson(responseJson);
+                        var response = PostClientResponse.FromJson(responseJson);
+
+                        if (response.Status == "success")
+                        {
+                            var newClientId = response.Data.Id;
+
+                            request.ClientId = newClientId.ToString();
+
+                            var crmHelper = new CRM.CrmHelper();
+                            crmHelper.UpdateContactWithClientId(request.ContactId, newClientId.ToString());
+
+                        }
 
                     }
                 }
+
             }
+
+
+            if (request.ClientId != null)
+            {
+                using (WebClient client = new WebClient())
+                {
+
+                    client.Encoding = Encoding.UTF8;
+                    client.Headers["Content-type"] = "application/json";
+                    client.Headers["Authorization"] = chat2deskToken;
+                    var urlString = "https://api.chat2desk.com/v1/messages";
+
+                    var responseJson = client.UploadString(urlString, "POST", request.ToJson());
+
+                    var response = PostMessageChat2DeskResponse.FromJson(responseJson);
+
+                }
+            }
+            else
+            {
+                throw new Exception("Сообщение не может быть отправлено, отсутствует ID клиента");
+            }
+
+
         }
 
     }
