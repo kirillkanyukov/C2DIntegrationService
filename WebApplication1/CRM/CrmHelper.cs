@@ -25,9 +25,26 @@ namespace WebApplication1.CRM
             if (chat == null)
                 chat = CreateChat(request);
 
-            CreateMessage(chat, request);
+            EntityReference message = GetMessage(request.MessageId);
+            if (message == null)
+                CreateMessage(chat, request);
 
             
+        }
+
+        private EntityReference GetMessage(long messageId)
+        {
+            var query = new QueryExpression(EntityNames.Message);
+            query.ColumnSet = new ColumnSet(MessageAttributes.Id);
+            query.Criteria = new FilterExpression()
+            {
+                Conditions =
+                {
+                    new ConditionExpression(MessageAttributes.Chat2DeskId, ConditionOperator.Equal, messageId.ToString())
+                }
+            };
+            var result = _service.RetrieveMultiple(query).Entities;
+            return result.Count == 0 ? null : result.FirstOrDefault().ToEntityReference();
         }
 
 
@@ -80,7 +97,7 @@ namespace WebApplication1.CRM
             {
                 Conditions =
                 {
-                    new ConditionExpression(ChatAttributes.Chat2DeskId, ConditionOperator.Equal, chatId)
+                    new ConditionExpression(ChatAttributes.Chat2DeskId, ConditionOperator.Equal, chatId.ToString())
                 }
             };
             var result = _service.RetrieveMultiple(query).Entities;

@@ -33,6 +33,10 @@ namespace WebApplication1
 
     public static class MessageAttributes
     {
+        public const string Id = "new_chat2deskmessageid";
+
+        public const string Chat2DeskId = "new_chat2deskid";
+
         public const string ChatId = "new_chatid";
 
         public const string Transport = "new_transport";
