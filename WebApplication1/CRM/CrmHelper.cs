@@ -56,6 +56,7 @@ namespace WebApplication1.CRM
             newChat[ChatAttributes.Chat2DeskOperatorId] = request.OperatorId.ToString();
             newChat[ChatAttributes.ContactId] = GetContact(request.ClientId.ToString());
             newChat[ChatAttributes.OperatorId] = GetSystemUser(request.OperatorId.ToString());
+            newChat[ChatAttributes.Chat2DeskId] = request.DialogId.ToString();
 
             return new EntityReference(EntityNames.Chat, _service.Create(newChat));
         }
