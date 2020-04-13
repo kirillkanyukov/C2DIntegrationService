@@ -6,12 +6,13 @@ using System.Net.Http;
 using System.Text;
 using System.Web.Configuration;
 using System.Web.Http;
+using System.Web.Http.Cors;
 using WebApplication1.Models;
 namespace WebApplication1.Controllers
 {
     public class OutgoingMessageController : ApiController
-    {        
-
+    {
+        [EnableCors(origins: "*", headers: "*", methods: "*")]
         // POST api/<controller>
         public void Post([FromBody]OutgoingMessage value)
         {

@@ -35,15 +35,15 @@ namespace WebApplication1.CRM
         {
             var newChat = new Entity(EntityNames.Chat);
 
-            newChat[ChatAttributes.Chat2DeskClientId] = request.ClientId;
-            newChat[ChatAttributes.Chat2DeskOperatorId] = request.OperatorId;
-            newChat[ChatAttributes.ContactId] = GetContact(request.ClientId);
-            newChat[ChatAttributes.OperatorId] = GetSystemUser(request.OperatorId);
+            newChat[ChatAttributes.Chat2DeskClientId] = request.ClientId.ToString();
+            newChat[ChatAttributes.Chat2DeskOperatorId] = request.OperatorId.ToString();
+            newChat[ChatAttributes.ContactId] = GetContact(request.ClientId.ToString());
+            newChat[ChatAttributes.OperatorId] = GetSystemUser(request.OperatorId.ToString());
 
             return new EntityReference(EntityNames.Chat, _service.Create(newChat));
         }
 
-        private EntityReference GetContact(long clientId)
+        private EntityReference GetContact(string clientId)
         {
             var query = new QueryExpression(EntityNames.Contact);
             query.ColumnSet = new ColumnSet(ContactAttributes.Id);
@@ -57,7 +57,7 @@ namespace WebApplication1.CRM
             var result = _service.RetrieveMultiple(query).Entities;
             return result.Count == 0 ? null : result.FirstOrDefault().ToEntityReference();
         }
-        private EntityReference GetSystemUser(long operatorId)
+        private EntityReference GetSystemUser(string operatorId)
         {
             var query = new QueryExpression(EntityNames.SystemUser);
             query.ColumnSet = new ColumnSet(SystemUserAttributes.Id);
@@ -126,9 +126,9 @@ namespace WebApplication1.CRM
 
             newMessage[MessageAttributes.Text] = requestBody.Text;
             newMessage[MessageAttributes.ChatId] = chat;
-            newMessage[MessageAttributes.Direction] = new OptionSetValue(type);
+            newMessage[MessageAttributes.Direction] =  new OptionSetValue(type);
             newMessage[MessageAttributes.Transport] = new OptionSetValue(transport);
-            newMessage[MessageAttributes.EventTime] = requestBody.EventTime;
+            newMessage[MessageAttributes.EventTime] = requestBody.EventTime.Date;
 
             _service.Create(newMessage);
         }

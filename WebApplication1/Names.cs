@@ -37,7 +37,7 @@ namespace WebApplication1
 
         public const string Transport = "new_transport";
 
-        public const string Direction = "new_direction";
+        public const string Direction = "new_type";
 
         public const string Text = "new_text";
 
@@ -63,15 +63,15 @@ namespace WebApplication1
 
     public static class Transports
     {
-        public const int Viber = 237530000;
-        public const int Telegram = 237530001;
-        public const int SMS = 237530001;
-        public const int Other = 237530001;
+        public const int Viber = 100000001;
+        public const int Telegram = 100000000;
+        public const int SMS = 100000002;
+        public const int Other = 100000003;
     }
     public static class Types
     {
-        public const int Incoming = 0;
-        public const int Outgoing = 1;
-        public const int System = 2;
+        public const int Incoming = 100000000;
+        public const int Outgoing = 100000001;
+        public const int System = 100000002;
     }
 }

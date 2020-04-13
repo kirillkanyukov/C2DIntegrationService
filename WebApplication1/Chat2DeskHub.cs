@@ -8,7 +8,7 @@ namespace WebApplication1
     {
         public void Send(string name, string message)
         {
-            Clients.All.addLog(name, message);
+            Clients.Caller.addLog(name, message);
         }
     }
 }
